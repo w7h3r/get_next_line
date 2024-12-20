@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "get_next_line.h"
 #include <stdlib.h>
 
 unsigned int	ft_strlen(const char *c)
@@ -44,16 +45,17 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	unsigned int	j;
 	char			*res;
 
-	if (!s1 || !s2)
-		return (NULL);
 	res = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (res == NULL)
 		return (NULL);
 	i = 0;
-	while (s1[i])
+	if (s1)
 	{
-		res[i] = s1[i];
-		i++;
+		while (s1[i])
+		{
+			res[i] = s1[i];
+			i++;
+		}
 	}
 	j = 0;
 	while (s2[j])
@@ -62,15 +64,15 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		j++;
 	}
 	res[i + j] = '\0';
+	free_imp((char *)s1, NULL);
 	return (res);
 }
 
-int	ft_word_len(char *str)
+char	*free_imp(char *buffer, char *temp)
 {
-	unsigned int	i;
-
-	i = 0;
-	while (*str != 0)
-		i++;
-	return (i);
+	if (buffer)
+		free(buffer);
+	if (temp)
+		free(temp);
+	return (NULL);
 }

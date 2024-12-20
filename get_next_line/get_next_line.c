@@ -14,56 +14,86 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-static char	*get_buffer(int fd, char *buffer)
+static char	*new_buffer(char *buffer)
 {
-	int		buff_size;
-	char	*temp_buffer;
+	char	*temp;
+	size_t	temp_len;
+	size_t	i;
 
-	temp_buffer = malloc((BUFFER_SIZE + 1) * (sizeof(char)));
-	if (!temp_buffer)
+	while (buffer[temp_len] != '\0' && buffer[temp_len] != '\n')
+		temp_len++;
+	temp = malloc((ft_strlen(buffer) - temp_len) * sizeof(char));
+	if (!temp)
+		return (free_imp(buffer, NULL));
+	i = 0;
+	while (i < temp_len)
+	{
+		temp[i] = buffer[i];
+		i++;
+	}
+	temp[i] = 0;
+	free (buffer);
+	return (temp);
+}
+
+static char	*get_line(char *buffer)
+{
+	char			*temp;
+	size_t			temp_len;
+	size_t			i;
+
+	if (buffer[0] == 0)
 		return (NULL);
-	while (1)
+	while (buffer[temp_len] != '\0' && buffer[temp_len] != '\n')
+		temp_len++;
+	temp = malloc(temp_len + 1 * sizeof(char));
+	if (!temp)
+		return (free_imp(buffer, temp));
+	i = 0;
+	while (i < temp_len)
 	{
-		buff_size = read(fd, temp_buffer, BUFFER_SIZE);
-		if (buff_size <= 0)
-			return (NULL);
-		temp_buffer[buff_size] = '\0';
-		buffer = ft_strjoin(buffer, temp_buffer);
-		if (ft_strchr(temp_buffer, '\n'))
-			break;
+		temp[i] = buffer[i];
+		i++;
 	}
-	free (temp_buffer);
-	return (buffer);
-}
-
-static char	*get_line(int fd, char *buffer)
-{
-	unsigned int	i;
-	char			*line;
-
-	if (!buffer || *buffer == '\0')
-		buffer = NULL;
-	buffer = get_buffer(fd, buffer);
-	line = malloc(ft_word_len(buffer) + 1);
-	while (*buffer != '\n' && *buffer != '\0')
-	{
-		*line = *buffer;
-		line++;
-	}
-	*line = '\0';
+	temp[i] = 0;
 	free(buffer);
-	return (line);
+	return (temp);
 }
 
-char		*get_next_line(int fd)
+static char	*get_and_merge(int fd, char *buffer)
+{
+	char			*temp;
+	ssize_t			len;
+
+	temp = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!temp)
+		return (free_imp(buffer, NULL));
+	len = 426632;
+	while (len > 0 && (!ft_strchr(temp, '\n')))
+	{
+		len = read(fd, temp, BUFFER_SIZE);
+		if (len < 0)
+			return (free_imp(buffer, NULL));
+		temp[len] = '\0';
+		temp = ft_strjoin(buffer, temp);
+		if (!buffer)
+			return (free_imp(NULL, temp));
+	}
+	free (buffer);
+	return (temp);
+}
+
+char	*get_next_line(int fd)
 {
 	static char		*buffer;
 	char			*next_line;
 
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	buffer = get_and_merge(fd, buffer);
 	if (!buffer)
-		buffer = malloc(1);
-	buffer = get_buffer(fd, buffer);
-	next_line = malloc(ft_word_len(buffer) + 1); // redundant/changeable (ft_word_len) usage, declare a new 'len' variable.
-	next_line = get_line(fd, buffer);
+		return (NULL);
+	buffer = new_buffer(buffer);
+	next_line = get_line(buffer);
 	return (next_line);
 }

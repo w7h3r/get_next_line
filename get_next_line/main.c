@@ -4,5 +4,6 @@
 
 int	main()
 {
-	printf("%s", (get_next_line(open("text", O_RDWR, 667))));
+	int fd = open("text", O_RDWR, 667);
+	printf("%s", (get_next_line(fd)));
 }
