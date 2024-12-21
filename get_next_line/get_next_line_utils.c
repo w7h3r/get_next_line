@@ -18,6 +18,8 @@ unsigned int	ft_strlen(const char *c)
 	unsigned int	i;
 
 	i = 0;
+	if (c == 0)
+		return (0);
 	while (c[i] != '\0')
 		i++;
 	return (i);
@@ -47,7 +49,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 	res = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (res == NULL)
-		return (NULL);
+		return (free_imp((char *)s1, NULL));
 	i = 0;
 	if (s1)
 	{
