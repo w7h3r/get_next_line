@@ -22,7 +22,7 @@ static char	*new_buffer(char *buffer)
 
 	while (buffer[temp_len] != '\0' && buffer[temp_len] != '\n')
 		temp_len++;
-	temp = malloc((ft_strlen(buffer) - temp_len) * sizeof(char));
+	temp = malloc((ft_strlen(buffer) - temp_len + 1) * sizeof(char));
 	if (!temp)
 		return (free_imp(buffer, NULL));
 	i = 0;
@@ -44,6 +44,7 @@ static char	*get_line(char *buffer)
 
 	if (buffer[0] == 0)
 		return (NULL);
+	temp_len = 0;
 	while (buffer[temp_len] != '\0' && buffer[temp_len] != '\n')
 		temp_len++;
 	temp = malloc(temp_len + 1 * sizeof(char));
@@ -63,6 +64,7 @@ static char	*get_line(char *buffer)
 static char	*get_and_merge(int fd, char *buffer)
 {
 	char			*temp;
+	char			*temp_temp;
 	ssize_t			len;
 
 	temp = malloc((BUFFER_SIZE + 1) * sizeof(char));
@@ -75,12 +77,14 @@ static char	*get_and_merge(int fd, char *buffer)
 		if (len < 0)
 			return (free_imp(buffer, NULL));
 		temp[len] = '\0';
-		temp = ft_strjoin(buffer, temp);
-		if (!buffer)
-			return (free_imp(NULL, temp));
+		temp_temp = ft_strjoin(buffer, temp);
+		free (buffer);
+		buffer = temp;
+		if (!temp)
+			return (free_imp(buffer, NULL));
 	}
-	free (buffer);
-	return (temp);
+	free (temp);
+	return (buffer);
 }
 
 char	*get_next_line(int fd)
@@ -93,7 +97,7 @@ char	*get_next_line(int fd)
 	buffer = get_and_merge(fd, buffer);
 	if (!buffer)
 		return (NULL);
-	buffer = new_buffer(buffer);
 	next_line = get_line(buffer);
+	buffer = new_buffer(buffer);
 	return (next_line);
 }
