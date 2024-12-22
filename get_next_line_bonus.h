@@ -17,6 +17,10 @@
 #  define BUFFER_SIZE 4
 # endif
 
+# ifndef MAX_FD
+#  define MAX_FD 1024
+# endif
+
 char			*get_next_line(int fd);
 char			*ft_strchr(const char *s, int c);
 char			*ft_strjoin(char const *s1, char const *s2);

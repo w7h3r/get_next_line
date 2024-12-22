@@ -94,23 +94,23 @@ static char	*get_and_merge(int fd, char *buffer)
 
 char	*get_next_line(int fd)
 {
-	static char		*buffer[MAX_FD];
+	static char		*buffer;
 	char			*buffbuff;
 	char			*next_line;
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	buffer[fd] = get_and_merge(fd, buffer[fd]);
-	if (!buffer[fd])
+	buffer = get_and_merge(fd, buffer);
+	if (!buffer)
 		return (NULL);
-	buffbuff = buffer[fd];
+	buffbuff = buffer;
 	next_line = get_line(buffbuff);
 	if (!next_line)
 	{
-		free(buffer[fd]);
-		buffer[fd] = NULL;
+		free(buffer);
+		buffer = NULL;
 		return (NULL);
 	}
-	buffer[fd] = new_buffer(buffer[fd]);
+	buffer = new_buffer(buffer);
 	return (next_line);
 }

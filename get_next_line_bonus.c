@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 #include <stdlib.h>
 #include <unistd.h>
 
@@ -98,7 +98,7 @@ char	*get_next_line(int fd)
 	char			*buffbuff;
 	char			*next_line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd >= MAX_FD)
 		return (NULL);
 	buffer[fd] = get_and_merge(fd, buffer[fd]);
 	if (!buffer[fd])

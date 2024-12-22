@@ -10,7 +10,6 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
 #include <stdlib.h>
 
 unsigned int	ft_strlen(const char *c)
@@ -41,6 +40,15 @@ char	*ft_strchr(const char *s, int c)
 	return (NULL);
 }
 
+char	*free_imp(char *buffer, char *temp)
+{
+	if (buffer)
+		free(buffer);
+	if (temp)
+		free(temp);
+	return (NULL);
+}
+
 char	*ft_strjoin(char const *s1, char const *s2)
 {
 	unsigned int	i;
@@ -68,13 +76,4 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	res[i + j] = '\0';
 	free_imp((char *)s1, NULL);
 	return (res);
-}
-
-char	*free_imp(char *buffer, char *temp)
-{
-	if (buffer)
-		free(buffer);
-	if (temp)
-		free(temp);
-	return (NULL);
 }
